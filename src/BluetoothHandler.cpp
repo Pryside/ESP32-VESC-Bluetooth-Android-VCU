@@ -71,8 +71,6 @@ bool BluetoothHandler::GetBTData(uint8_t *buffer){
   //Serial.write(SerialBT.read());
   
   if(SerialBT.readBytesUntil('\n',buffer,SIZEOF_BT_RECIEVE)>0){
-    
-    
     bool found = true;
     const int start = SIZEOF_BT_RECIEVE-ENDOF_RECIEVE_LEN;
     for(int i = 0; i < ENDOF_RECIEVE_LEN; i++ ){
@@ -81,8 +79,6 @@ bool BluetoothHandler::GetBTData(uint8_t *buffer){
     if (found){
       //Serial.println("found data");
       //correct data found, trigger the set function
-      
-      
       return true;
     }
   }

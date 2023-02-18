@@ -2,10 +2,6 @@
 #include "VescUart.h"
 #include "VehicleData.h"
 
-#include <FastLED.h>
-
-//#include <Adafruit_NeoPixel.h>
-//#include <HSBColor.h>
 
 class VehicleControl{
     private:

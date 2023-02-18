@@ -3,11 +3,16 @@
 #include "Timer.h"
 #include "BluetoothHandler.h"
 #include "VehicleControl.h"
+#include "BatteryModel.h"
+
+#include "VehicleData.h"
+
 
 
 //##############################################################################
-//          VERSION: 0.91 LIGHT
+//          VERSION: 0.92 eBIKE_TEST
 //##############################################################################
+// Note: first usable commit, removed old features
 
 
 
@@ -21,9 +26,8 @@ BluetoothHandler BT;
 VehicleControl VCU;
 
 Timer DataTimer;
-Timer ControlTimer;
+//Timer ControlTimer;
 Timer BluetoothTimer;
-Timer LedTimer;
 
 
 void setup() {
@@ -39,15 +43,11 @@ void setup() {
   DataTimer.init();
   DataTimer.setInterval(50);
 
-  ControlTimer.init();
-  ControlTimer.setInterval(50);
+  // ControlTimer.init();
+  // ControlTimer.setInterval(50);
 
   BluetoothTimer.init();
   BluetoothTimer.setInterval(50);
-
-  VCU.init_ledstrip();
-  LedTimer.init();
-  LedTimer.setInterval(25);
 
   pinMode(THROTTLEPIN,ANALOG);
   pinMode(BRAKEPIN,ANALOG);
@@ -63,23 +63,12 @@ void loop() {
       BT.CalculateData(UART,BT.SendData);
     }
 
-    if(ControlTimer.isdone()){
-      VCU.ControlVesc(UART);
-    }
+    // if(ControlTimer.isdone()){
+    //   VCU.ControlVesc(UART);
+    // }
 
     if(BluetoothTimer.isdone()){
       BT.SendBTData();
       uint8_t buffer[SIZEOF_BT_RECIEVE] = {};
-      if (BT.GetBTData(buffer)){
-        VCU.set_ledstrip(buffer);
-      }
     }
-
-    if(LedTimer.isdone()){
-      
-      VCU.set_speed(UART.data.tachometer,BT.SendData.kmh);
-      VCU.refresh_ledstrip();
-      
-    }
-
 }
