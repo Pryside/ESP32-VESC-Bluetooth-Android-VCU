@@ -1,14 +1,13 @@
-#include "BluetoothSerial.h"
-#include <Arduino.h>
-#include "VescUart.h"
 #include "VehicleData.h"
-
-
+#include "BluetoothSerial.h"
+#include "FlashSave.h"
+#include "VescUart.h"
 
 class BluetoothHandler{
 
 private:
 
+    FlashSave Flash;
     BluetoothSerial SerialBT;
     const uint8_t endof_r[ENDOF_RECIEVE_LEN] = {'s','e','t'};
     const float ratioPulseDistanceKm = GEARRATIO * WHEELCIRCUM / ( (float)POLEPAIRS * (float)CORRECTION)/1000.0;
@@ -17,7 +16,7 @@ private:
     union memory
     {
         float input;
-        uint8_t bytes[3];
+        uint8_t bytes[4];
     };
     union memory splitbytes;
 

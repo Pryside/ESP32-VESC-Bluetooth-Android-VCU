@@ -3,16 +3,14 @@
 #include "Timer.h"
 #include "BluetoothHandler.h"
 #include "VehicleControl.h"
-#include "BatteryModel.h"
 
-#include "VehicleData.h"
+
 
 
 
 //##############################################################################
 //          VERSION: 0.92 eBIKE_TEST
 //##############################################################################
-// Note: first usable commit, removed old features
 
 
 
@@ -26,9 +24,8 @@ BluetoothHandler BT;
 VehicleControl VCU;
 
 Timer DataTimer;
-//Timer ControlTimer;
+Timer ControlTimer;
 Timer BluetoothTimer;
-
 
 void setup() {
   Serial.begin(115200);
@@ -43,29 +40,25 @@ void setup() {
   DataTimer.init();
   DataTimer.setInterval(50);
 
-  // ControlTimer.init();
-  // ControlTimer.setInterval(50);
+  ControlTimer.init();
+  ControlTimer.setInterval(50);
 
   BluetoothTimer.init();
   BluetoothTimer.setInterval(50);
 
   pinMode(THROTTLEPIN,ANALOG);
   pinMode(BRAKEPIN,ANALOG);
-
-  pinMode(FRONTBEAM_PIN,OUTPUT);
 }
 
 void loop() {
-
-
     if(DataTimer.isdone()){
       UART.getVescValues();
-      BT.CalculateData(UART,BT.SendData);
+      BT.CalculateData(UART, BT.SendData);
     }
 
-    // if(ControlTimer.isdone()){
-    //   VCU.ControlVesc(UART);
-    // }
+    if(ControlTimer.isdone()){
+      VCU.ControlVesc(UART);
+    }
 
     if(BluetoothTimer.isdone()){
       BT.SendBTData();

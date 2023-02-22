@@ -13,6 +13,7 @@ class BatteryModel{
     private:
         float SOC = 0;
         float IR = 0;
+        boolean BatteryWasShutdown = false;
 
 
 

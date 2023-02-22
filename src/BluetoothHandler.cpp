@@ -1,5 +1,9 @@
 #include "BluetoothHandler.h"
 
+
+//#include "BatteryModel.h" not used yet
+
+
 void BluetoothHandler::IntoBytes(float inp, uint8_t* output, uint8_t index) {
     splitbytes.input = inp;
     for (int i = 0; i < 4; i++)
@@ -37,6 +41,13 @@ void BluetoothHandler::CalculateData(VescUart getUart, BTdata &ldata){
   ldata.inpVolt   = getUart.data.inpVoltage;
   ldata.motorCurr = getUart.data.avgMotorCurrent;
   ldata.tempMotor = getUart.data.tempMotor;
+
+  Flash.setStats(0,ldata.km, ldata.wattHours, ldata.wattHoursC);
+  ldata.totalWh = Flash.getStats().EnergyWh;
+  ldata.totalkm = Flash.getStats().DistanceKm;
+  ldata.totalWhC = Flash.getStats().EnergyWhC;
+
+  Flash.SaveOnShutdown(ldata.inpVolt, SHUTDOWN_THESH_V);
 }
 
 void BluetoothHandler::FitToArray(BTdata lbtdata, float* ldata){
@@ -92,4 +103,6 @@ void BluetoothHandler::init(){
     lastAmpHours = 0;
     lastInputVoltage = 0;
     lastAmpHoursCharged = 0;
+
+    Flash.init();
 }

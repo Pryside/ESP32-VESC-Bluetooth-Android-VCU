@@ -10,11 +10,6 @@
 #define BRAKELOW 1900
 #define BRAKEHIGH 2500
 
-#define FRONTBEAM_PIN 27
-
-#define LEDSTRIP_PIN 5
-#define LEDSTRIP_SIZE 72
-#define LEDSTRIP_LEN 0.5
 
 // const float WheelCircum = 0.615;
 // const float GearRatio = 1;
@@ -31,3 +26,5 @@
 
 
 #define BLUETOOTH_NAME "ESP32test"
+
+#define SHUTDOWN_THESH_V 15.5F //Shutdown voltage
