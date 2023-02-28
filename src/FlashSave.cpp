@@ -1,14 +1,24 @@
 #include "FlashSave.h"
+#define DEBUG
 
 void FlashSave::init(){ //get saved data and validate
-    EEPROM.begin(EEPROM_SIZE);
+    //EEPROM.begin(EEPROM_SIZE);
+    prefs.begin(PREFERENCE_NAME);
 
-    stats ReadStats = {0,0,0,0, 0};
-    EEPROM.get(EEPROM_STAT_ADRR, ReadStats);
-    if (createChecksum(ReadStats) == ReadStats.checksum){
+    stats ReadStats;
+    prefs.getBytes(PREFERENCE_NAME, &ReadStats, sizeof(ReadStats));
+    int tmp_checksum = createChecksum(ReadStats);
+
+    if (tmp_checksum == ReadStats.checksum){ //when checksum fits
         initialStats = ReadStats;
         currentStats = ReadStats;
     }
+    else{ //else resetting the flash
+        currentStats.checksum = createChecksum(currentStats);
+        prefs.putBytes(PREFERENCE_NAME, &currentStats, sizeof(currentStats));
+    }
+
+    
 }
 
 int FlashSave::createChecksum(stats ValidateStats){
@@ -31,7 +41,7 @@ void FlashSave::setStats(float percent, float km, float wh, float whc){
 void FlashSave::SaveOnShutdown(float voltage, float voltage_threshhold){
     if (voltage < voltage_threshhold && StatsSaved == false){
         currentStats.checksum = createChecksum(currentStats);
-        EEPROM.put(EEPROM_STAT_ADRR, currentStats);
+        prefs.putBytes(PREFERENCE_NAME, &currentStats, sizeof(currentStats));
         StatsSaved = true;
     }
 }

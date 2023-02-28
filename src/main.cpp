@@ -5,9 +5,6 @@
 #include "VehicleControl.h"
 
 
-
-
-
 //##############################################################################
 //          VERSION: 0.92 eBIKE_TEST
 //##############################################################################
@@ -20,6 +17,7 @@
 
 
 VescUart UART;
+
 BluetoothHandler BT;
 VehicleControl VCU;
 
@@ -27,11 +25,15 @@ Timer DataTimer;
 Timer ControlTimer;
 Timer BluetoothTimer;
 
+int dir = 1;
+
 void setup() {
   Serial.begin(115200);
-  BT.init();
+  
   
   Serial.println("The device started, now you can pair it with bluetooth!");
+  
+  BT.init();
   
   Serial2.begin(115200, SERIAL_8N1, RXD2, TXD2);
   while (!Serial2) {;}
@@ -48,12 +50,56 @@ void setup() {
 
   pinMode(THROTTLEPIN,ANALOG);
   pinMode(BRAKEPIN,ANALOG);
+
+  #ifdef DEBUG
+    UART.data.avgInputCurrent = 15.0F;
+    UART.data.rpm = 1600.0F;
+    UART.data.inpVoltage = 50.0F;
+    UART.data.ampHours = 18.0F;
+    UART.data.ampHoursCharged = 19.0F;
+    UART.data.wattHours = 20.0F;
+    UART.data.wattHoursCharged = 21.0F;
+    UART.data.tachometer = 2200.0F;
+    UART.data.tachometerAbs = 2300.0F;
+    UART.data.tempMosfet = 24.0F;
+    UART.data.tempMotor = 25.0F;
+
+    pinMode(2, OUTPUT);
+  #endif
 }
 
 void loop() {
+    digitalWrite(2,1);
+
     if(DataTimer.isdone()){
-      UART.getVescValues();
+      #ifndef DEBUG
+      if ( UART.getVescValues() ){
+        BT.CalculateData(UART, BT.SendData);
+      }
+      #else
       BT.CalculateData(UART, BT.SendData);
+
+      if (UART.data.inpVoltage > 50.00)
+        dir = -1;
+        if (UART.data.inpVoltage < 30.00)
+        dir = 1;
+
+        UART.data.inpVoltage += dir;
+        
+      if(Serial.available()){
+        String tempinp = Serial.readStringUntil('\n');
+        UART.data.wattHours = tempinp.toInt();
+
+
+        
+
+        Serial.println(BT.SendData.totalkm);
+        Serial.println(BT.SendData.totalWh);
+        Serial.println(BT.SendData.totalWhC);
+        Serial.println(BT.SendData.batPercent);
+        Serial.println();
+      }
+      #endif
     }
 
     if(ControlTimer.isdone()){
@@ -64,4 +110,7 @@ void loop() {
       BT.SendBTData();
       uint8_t buffer[SIZEOF_BT_RECIEVE] = {};
     }
+
+    digitalWrite(2,0);
+
 }

@@ -1,14 +1,13 @@
-#include <EEPROM.h>
-#define EEPROM_SIZE 50
-#define EEPROM_STAT_ADRR 0
+#include <Preferences.h>
+#define PREFERENCE_NAME "stats"
 
 struct stats
         {
-            float BatteryPercent;
-            float DistanceKm;
-            float EnergyWh;
-            float EnergyWhC;
-            int checksum;
+            float BatteryPercent = 0.0F;
+            float DistanceKm = 0.0F;
+            float EnergyWh = 0.0F;
+            float EnergyWhC = 0.0F;
+            int checksum = 0;
         };
 
 class FlashSave{
@@ -19,8 +18,10 @@ class FlashSave{
         void setStats(float percent, float km, float wh, float whc);
     
     private:
-        stats initialStats = {0, 0, 0, 0, 0};
-        stats currentStats = {0, 0, 0, 0, 0};
+        Preferences prefs;
+
+        stats initialStats;
+        stats currentStats;
 
         bool StatsSaved = false;
         int createChecksum(stats validateStats);

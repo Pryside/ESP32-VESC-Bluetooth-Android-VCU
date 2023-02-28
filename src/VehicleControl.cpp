@@ -6,6 +6,7 @@ void VehicleControl::ControlVesc(VescUart &lVesc){
   int input_brake = analogRead(BRAKEPIN);
   int output = 127;
 
+
   if(input_throttle > (last_throttle+THROTTLERATE)){
     input_throttle = last_throttle + THROTTLERATE;
   }

@@ -2,11 +2,14 @@
 #include "BluetoothSerial.h"
 #include "FlashSave.h"
 #include "VescUart.h"
+#include "BatteryModel.h"
+
+#define BT_VARS 14
 
 class BluetoothHandler{
 
 private:
-
+    BatteryModel BatModel;
     FlashSave Flash;
     BluetoothSerial SerialBT;
     const uint8_t endof_r[ENDOF_RECIEVE_LEN] = {'s','e','t'};
@@ -26,7 +29,7 @@ public:
 
     struct BTdata
     {
-    float tempMotor, motorCurr, batCurr, kmh, inpVolt, ampHours, ampHoursC, km, wattHours, wattHoursC, totalWh, totalWhC, totalkm;
+    float tempMotor, motorCurr, batCurr, kmh, inpVolt, ampHours, ampHoursC, km, wattHours, wattHoursC, totalWh, totalWhC, totalkm, batPercent;
     };
 
     BTdata SendData;

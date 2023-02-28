@@ -1,3 +1,5 @@
+#define DEBUG
+
 #define RXD2 16
 #define TXD2 17
 
@@ -28,3 +30,7 @@
 #define BLUETOOTH_NAME "ESP32test"
 
 #define SHUTDOWN_THESH_V 15.5F //Shutdown voltage
+#define BATTERY_IR 0.03F //IR of the whole Pack
+#define BATTERY_V_FULL 49.8F
+#define BATTERY_V_EMPTY 38.4F
+#define BATTERY_FULL_WH 1011.0F
