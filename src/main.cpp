@@ -23,7 +23,8 @@ VehicleControl VCU;
 
 Timer DataTimer;
 Timer ControlTimer;
-Timer BluetoothTimer;
+Timer BtTimerNotifys;
+Timer BtTimerReads;
 
 int dir = 1;
 
@@ -45,8 +46,11 @@ void setup() {
   ControlTimer.init();
   ControlTimer.setInterval(50);
 
-  BluetoothTimer.init();
-  BluetoothTimer.setInterval(50);
+  BtTimerNotifys.init();
+  BtTimerNotifys.setInterval(18);
+
+  BtTimerReads.init();
+  BtTimerReads.setInterval(1000);
 
   pinMode(THROTTLEPIN,ANALOG);
   pinMode(BRAKEPIN,ANALOG);
@@ -77,7 +81,7 @@ void loop() {
         BT.CalculateData(UART, BT.SendData);
       }
       #else
-      BT.CalculateData(UART, BT.SendData);
+      BT.CalculateData(UART);
 
       if (UART.data.inpVoltage > 50.00)
         dir = -1;
@@ -85,18 +89,16 @@ void loop() {
         dir = 1;
 
         UART.data.inpVoltage += dir;
-        
+
       if(Serial.available()){
         String tempinp = Serial.readStringUntil('\n');
         UART.data.wattHours = tempinp.toInt();
 
+        Serial.println(BT.getBTValue(totalkm));
+        Serial.println(BT.getBTValue(totalWh));
+        Serial.println(BT.getBTValue(totalWhC));
+        Serial.println(BT.getBTValue(batPercent));
 
-        
-
-        Serial.println(BT.SendData.totalkm);
-        Serial.println(BT.SendData.totalWh);
-        Serial.println(BT.SendData.totalWhC);
-        Serial.println(BT.SendData.batPercent);
         Serial.println();
       }
       #endif
@@ -106,10 +108,13 @@ void loop() {
       VCU.ControlVesc(UART);
     }
 
-    if(BluetoothTimer.isdone()){
-      BT.SendBTData();
-      uint8_t buffer[SIZEOF_BT_RECIEVE] = {};
+    if(BtTimerNotifys.isdone()){
+      BT.SendNotifyBTData();
     }
+    if(BtTimerReads.isdone()){
+      BT.SetReadBTData();
+    }
+
 
     digitalWrite(2,0);
 
