@@ -1,6 +1,7 @@
 #include "FlashSave.h"
 #define DEBUG
 
+
 void FlashSave::init(){ //get saved data and validate
     //EEPROM.begin(EEPROM_SIZE);
     prefs.begin(PREFERENCE_NAME);
@@ -29,6 +30,14 @@ int FlashSave::createChecksum(stats ValidateStats){
 stats FlashSave::getStats(){
     return currentStats;
 }
+
+bool FlashSave::getLockdown(){
+    return currentStats.lockdown;
+}
+void FlashSave::setLockdown(bool lockit){
+    currentStats.lockdown = lockit;
+}
+
 
 void FlashSave::setStats(float percent, float km, float wh, float whc){
     currentStats.BatteryPercent = initialStats.BatteryPercent + percent;

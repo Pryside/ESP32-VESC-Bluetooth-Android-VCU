@@ -94,8 +94,7 @@ const String Read_UUIDs[BT_READS][2] ={
 class BluetoothHandler{
 
 private:
-    BatteryModel BatModel;
-    FlashSave Flash;
+    
 
     // struct BTdata
     // {
@@ -114,8 +113,9 @@ private:
 
 public:
 
-
     
+    BatteryModel BatModel;
+    FlashSave Flash;
 
 
 

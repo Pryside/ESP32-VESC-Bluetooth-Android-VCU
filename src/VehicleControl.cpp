@@ -2,6 +2,7 @@
 
 
 void VehicleControl::ControlVesc(VescUart &lVesc){
+
   int input_throttle = analogRead(THROTTLEPIN);
   int input_brake = analogRead(BRAKEPIN);
   int output = 127;
@@ -31,4 +32,25 @@ void VehicleControl::ControlVesc(VescUart &lVesc){
   lVesc.nunchuck.valueY = output;
   lVesc.setNunchuckValues();
 
+}
+
+void VehicleControl::PasTriggered(){
+  //debouce
+  unsigned long diff = millis() - last_PAS;
+  if (diff > 5 && diff < 1000){
+    for (int i = 0; i<(PAS_SMOOTHING-1); i++){
+      time_between[i] = time_between[i+1];
+    }
+    time_between[PAS_SMOOTHING] = diff;
+  }
+  last_PAS = millis();
+}
+
+
+
+void VehicleControl::setLockdown(bool lockme){
+  lockdownmode = lockme;
+}
+bool VehicleControl::getLockdown(){
+  return lockdownmode;
 }

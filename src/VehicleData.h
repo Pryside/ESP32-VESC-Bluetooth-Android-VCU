@@ -1,4 +1,4 @@
-#define DEBUG
+//#define DEBUG
 
 #define RXD2 16
 #define TXD2 17
@@ -11,6 +11,10 @@
 #define BRAKEPIN 35 //NOT FINAL PIN!!
 #define BRAKELOW 1900
 #define BRAKEHIGH 2500
+
+#define PAS_PIN 36
+
+#define PAS_SMOOTHING 4
 
 
 // const float WheelCircum = 0.615;

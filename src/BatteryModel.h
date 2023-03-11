@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include "VehicleData.h"
-//#include "VescUart.h"
 
 class BatteryModel{
     public:

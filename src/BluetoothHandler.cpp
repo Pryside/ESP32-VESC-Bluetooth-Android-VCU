@@ -35,6 +35,7 @@ private:
     }
 
 private:
+
     void onRead(BLECharacteristic* pCharacteristic) override
     {
         PrintEvent("onRead", pCharacteristic->getValue().c_str());
@@ -128,8 +129,8 @@ void BluetoothHandler::SendNotifyBTData(){
 
 void BluetoothHandler::SetReadBTData(){
     if(g_centralConnected){
-        if (read_counter >= BT_READS+BT_NOTIFYS) read_counter = 0+BT_NOTIFYS;
-        g_pCharRead[read_counter]->setValue(SendData[read_counter]);
+        if (read_counter >= BT_READS) read_counter = 0;
+        g_pCharRead[read_counter]->setValue(SendData[read_counter+BT_NOTIFYS]);
         read_counter++;
     }
 
@@ -142,6 +143,7 @@ bool BluetoothHandler::GetBTData(uint8_t *buffer){
 }
 
 float BluetoothHandler::getBTValue(varnames name){
+    
     return SendData[name];
 }
 
