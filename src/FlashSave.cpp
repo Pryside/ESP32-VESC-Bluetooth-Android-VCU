@@ -30,10 +30,6 @@ int FlashSave::createChecksum(stats ValidateStats){
 stats FlashSave::getStats(){
     return currentStats;
 }
-
-bool FlashSave::getLockdown(){
-    return currentStats.lockdown;
-}
 void FlashSave::setLockdown(bool lockit){
     currentStats.lockdown = lockit;
 }

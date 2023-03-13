@@ -15,6 +15,14 @@
 #define PAS_PIN 36
 
 #define PAS_SMOOTHING 4
+#define PAS_MAXTIME 1000
+//max output power (254 full, 127 no power)
+#define PAS_MAXOUTPUT 180
+//wanted cadence on PAS
+#define PAS_SETSPEED 50
+//PAS controller P and I constants
+#define KP_PAS 1
+#define KI_PAS 0.1f
 
 
 // const float WheelCircum = 0.615;
