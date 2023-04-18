@@ -3,13 +3,13 @@
 class MyServerCallbacks: public BLEServerCallbacks {
     void onConnect(BLEServer* pServer) {
       g_centralConnected = true;
-      Serial.println("connected...");
+      //Serial.println("connected...");
       BLEDevice::startAdvertising();
     };
 
     void onDisconnect(BLEServer* pServer) {
       g_centralConnected = false;
-      Serial.println("disconnect...");
+      //Serial.println("disconnect...");
     }
 };
 
@@ -38,17 +38,17 @@ private:
 
     void onRead(BLECharacteristic* pCharacteristic) override
     {
-        PrintEvent("onRead", pCharacteristic->getValue().c_str());
+        //PrintEvent("onRead", pCharacteristic->getValue().c_str());
     }
 
     void onWrite(BLECharacteristic* pCharacteristic) override
     {
-        PrintEvent("onWrite", pCharacteristic->getValue().c_str());
+        //PrintEvent("onWrite", pCharacteristic->getValue().c_str());
     }
 
     void onNotify(BLECharacteristic* pCharacteristic) override
     {
-        PrintEvent("onNotify", pCharacteristic->getValue().c_str());
+        //PrintEvent("onNotify", pCharacteristic->getValue().c_str());
     }
 
     void onStatus(BLECharacteristic* pCharacteristic, Status status, uint32_t code) override
@@ -67,14 +67,12 @@ private:
         }
         event += ":";
         event += String(code).c_str();
-        PrintEvent(event.c_str(), nullptr);
+        //PrintEvent(event.c_str(), nullptr);
     }
 
 private:
     std::string m_name;
 };
-
-
 
 
 void BluetoothHandler::CalculateData(VescUart getUart){
@@ -101,10 +99,8 @@ void BluetoothHandler::CalculateData(VescUart getUart){
   SendData[tempMotor] = getUart.data.tempMotor;
 
   SendData[batPercent] = BatModel.getSOC(SendData[inpVolt], SendData[batCurr], SendData[wattHours],
-                                     SendData[wattHoursC], Flash.getStats().BatteryPercent);
+                                         SendData[wattHoursC], Flash.getStats().BatteryPercent);
 
-
-  
   Flash.setStats(SendData[batPercent],SendData[km], SendData[wattHours], SendData[wattHoursC]);
   SendData[totalWh] = Flash.getStats().EnergyWh;
   SendData[totalkm] = Flash.getStats().DistanceKm;
@@ -123,9 +119,7 @@ void BluetoothHandler::SendNotifyBTData(){
 
         notify_counter++;
     }
-
 }
-
 
 void BluetoothHandler::SetReadBTData(){
     if(g_centralConnected){
@@ -133,10 +127,7 @@ void BluetoothHandler::SetReadBTData(){
         g_pCharRead[read_counter]->setValue(SendData[read_counter+BT_NOTIFYS]);
         read_counter++;
     }
-
 }
-
-
 
 bool BluetoothHandler::GetBTData(uint8_t *buffer){
   return 0;
@@ -166,17 +157,14 @@ void BluetoothHandler::init(){
             
             uint32_t propertyFlags = BLECharacteristic::PROPERTY_NOTIFY;
             char tempUUID[37] = {  };
-            //char tempName[20] = {  };
+            
             Notify_UUIDs[u][0].toCharArray(tempUUID, 37);
-            //Notify_UUIDs[u][1].toCharArray(tempName, sizeof(Notify_UUIDs[u][1]));
-            //g_pCharNotifyDesc[u] = new BLE2902();
-            //g_pCharNotifyDesc[u]->setValue(tempName);
+            
             g_pCharNotify[u] = pService->createCharacteristic(tempUUID,propertyFlags);
             //g_pCharNotify[u]->addDescriptor(g_pCharNotifyDesc[u]);
             g_pCharNotify[u]->addDescriptor(new BLE2902());
 
             delay(10);
-
         }
 
     //Create all reads
@@ -184,9 +172,7 @@ void BluetoothHandler::init(){
             
             uint32_t propertyFlags = BLECharacteristic::PROPERTY_READ;
             char tempUUID[37] = {  };
-            //char tempName[20] = {  };
             Read_UUIDs[u][0].toCharArray(tempUUID, 37);
-            //Read_UUIDs[u][1].toCharArray(tempName, sizeof(Read_UUIDs[u][1]));
             g_pCharRead[u] = pService->createCharacteristic(tempUUID,propertyFlags);
             g_pCharRead[u]->addDescriptor(new BLE2902());
 

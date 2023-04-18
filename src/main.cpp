@@ -6,7 +6,7 @@
 
 
 //##############################################################################
-//          VERSION: 0.92 eBIKE_TEST
+//          VERSION: 1.01 BLE
 //##############################################################################
 
 
@@ -23,6 +23,7 @@ VehicleControl VCU;
 
 Timer DataTimer;
 Timer ControlTimer;
+Timer AnalogReadTimer;
 Timer BtTimerNotifys;
 Timer BtTimerReads;
 
@@ -47,11 +48,14 @@ void setup() {
   ControlTimer.init();
   ControlTimer.setInterval(50);
 
+  AnalogReadTimer.init();
+  AnalogReadTimer.setInterval(10);
+
   BtTimerNotifys.init();
   BtTimerNotifys.setInterval(50);
 
   BtTimerReads.init();
-  BtTimerReads.setInterval(1000);
+  BtTimerReads.setInterval(500);
 
   pinMode(THROTTLEPIN,ANALOG);
   pinMode(BRAKEPIN,ANALOG);
@@ -63,7 +67,6 @@ void setup() {
 }
 
 void loop() {
-    digitalWrite(2,1);
 
     if(DataTimer.isdone()){
       if ( UART.getVescValues() ){
@@ -75,13 +78,18 @@ void loop() {
       VCU.ControlVesc(UART);
     }
 
+    if(AnalogReadTimer.isdone()){
+      VCU.ReadAnalogs();
+    }
+
     if(BtTimerNotifys.isdone()){
       BT.SendNotifyBTData();
     }
 
     if(BtTimerReads.isdone()){
       BT.SetReadBTData();
-      // VCU lockdown check only here because of low frequency
+      VCU.giveSpeed(BT.getBTValue(kmh));
+      // VCU lockdown check
       if (VCU.getLockdown() != BT.Flash.getStats().lockdown){
         BT.Flash.setLockdown(VCU.getLockdown());
       }

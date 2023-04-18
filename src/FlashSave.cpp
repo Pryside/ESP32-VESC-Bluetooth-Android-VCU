@@ -19,7 +19,6 @@ void FlashSave::init(){ //get saved data and validate
         prefs.putBytes(PREFERENCE_NAME, &currentStats, sizeof(currentStats));
     }
 
-    
 }
 
 int FlashSave::createChecksum(stats ValidateStats){
@@ -32,6 +31,8 @@ stats FlashSave::getStats(){
 }
 void FlashSave::setLockdown(bool lockit){
     currentStats.lockdown = lockit;
+    //Serial.println("change saved!");
+    //prefs.putBytes(PREFERENCE_NAME, &currentStats, sizeof(currentStats));
 }
 
 
